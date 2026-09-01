@@ -1,0 +1,78 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   Int       @id @default(autoincrement())
+  username             String    @unique
+  email                String    @unique
+  phone_number         String?
+  password_hash        String
+  role                 String    @default("Customer") // Customer, Chef, Cashier, Nutritionist
+  employee_id          String?
+  dietary_restrictions String?
+  created_date         DateTime  @default(now())
+  last_login           DateTime?
+  is_active            Boolean   @default(true)
+  
+  orders               Order[]
+  menu_items           MenuItem[]
+}
+
+model MenuItem {
+  id             Int       @id @default(autoincrement())
+  name           String
+  category       String
+  description    String?
+  price          Float
+  calories       Int?
+  allergens      String?
+  chef_id        Int?
+  chef           User?     @relation(fields: [chef_id], references: [id])
+  creation_date  DateTime  @default(now())
+  status         String    @default("Active") // Active, Inactive
+  image_url      String?
+
+  order_items    OrderItem[]
+}
+
+model Order {
+  id                     Int       @id @default(autoincrement())
+  customer_id            Int
+  customer               User      @relation(fields: [customer_id], references: [id])
+  order_date             DateTime  @default(now())
+  total_amount           Float
+  status                 String    @default("Pending") // Pending, Preparing, Ready, Completed, Cancelled
+  payment_method         String?
+  delivery_preference    String?
+  special_instructions   String?
+  estimated_ready_time   DateTime?
+
+  order_items            OrderItem[]
+}
+
+model OrderItem {
+  id               Int       @id @default(autoincrement())
+  order_id         Int
+  order            Order     @relation(fields: [order_id], references: [id])
+  menu_item_id     Int
+  menu_item        MenuItem  @relation(fields: [menu_item_id], references: [id])
+  quantity         Int
+  unit_price       Float
+  special_requests String?
+}
+
+model Inventory {
+  id               Int       @id @default(autoincrement())
+  item_name        String
+  quantity         Int
+  unit             String
+  reorder_level    Int
+  expiration_date  DateTime?
+  supplier_id      Int?
+}

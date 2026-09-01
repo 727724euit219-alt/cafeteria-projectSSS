@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cafeteria Management System - Database Specification</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+
+    body {
+      font-family: 'Calibri', 'Inter', sans-serif;
+      color: #111;
+      background: #fff;
+      line-height: 1.4;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+      margin-top: 30px;
+    }
+
+    h1.doc-title {
+      font-size: 22pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 15pt;
+      font-weight: 700;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p, li {
+      font-size: 11pt;
+    }
+
+    ul {
+      margin-top: 4px;
+      margin-bottom: 14px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 20px;
+      font-size: 10.5pt;
+    }
+
+    th {
+      background-color: #d9d9d9;
+      color: #000;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid #666;
+    }
+
+    td {
+      padding: 7px 12px;
+      border: 1px solid #ccc;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+
+    .er-diagram-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+    }
+
+    .er-box {
+      width: 260px;
+      border: 2px solid #333;
+      background: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      font-size: 9pt;
+    }
+
+    .er-header {
+      background: #333;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      padding: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .er-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .er-row:last-child {
+      border-bottom: none;
+    }
+
+    .er-key {
+      font-weight: bold;
+      color: #0056b3;
+      font-size: 8pt;
+    }
+
+    .er-arrow {
+      font-size: 10pt;
+      font-weight: bold;
+      color: #555;
+      text-align: center;
+      margin: 4px 0;
+    }
+
+    .no-print-bar {
+      background: #10b981;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    @media print {
+      .no-print-bar {
+        display: none !important;
+      }
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print-bar">
+    <div>
+      <strong>🍱 Cafeteria Database Specification Ready</strong> - Press <kbd>Ctrl + P</kbd> to save as PDF or Print.
+    </div>
+    <button onclick="window.print()" style="background: #fff; color: #059669; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <h1 class="doc-title">Database Design (Cafeteria Management System)</h1>
+
+  <h2>1. Database Tables</h2>
+
+  <h3>Users</h3>
+  <ul>
+    <li>id (PK)</li>
+    <li>username</li>
+    <li>email</li>
+    <li>phone_number</li>
+    <li>password_hash</li>
+    <li>role</li>
+    <li>employee_id</li>
+    <li>dietary_restrictions</li>
+    <li>created_date</li>
+    <li>last_login</li>
+    <li>is_active</li>
+  </ul>
+
+  <h3>MenuItems</h3>
+  <ul>
+    <li>id (PK)</li>
+    <li>name</li>
+    <li>category</li>
+    <li>description</li>
+    <li>price</li>
+    <li>calories</li>
+    <li>allergens</li>
+    <li>chef_id (FK)</li>
+    <li>creation_date</li>
+    <li>status</li>
+    <li>image_url</li>
+  </ul>
+
+  <h3>Orders</h3>
+  <ul>
+    <li>id (PK)</li>
+    <li>customer_id (FK)</li>
+    <li>order_date</li>
+    <li>total_amount</li>
+    <li>status</li>
+    <li>payment_method</li>
+    <li>delivery_preference</li>
+    <li>special_instructions</li>
+    <li>estimated_ready_time</li>
+  </ul>
+
+  <h3>OrderItems</h3>
+  <ul>
+    <li>id (PK)</li>
+    <li>order_id (FK)</li>
+    <li>menu_item_id (FK)</li>
+    <li>quantity</li>
+    <li>unit_price</li>
+    <li>special_requests</li>
+  </ul>
+
+  <h3>Inventory</h3>
+  <ul>
+    <li>id (PK)</li>
+    <li>item_name</li>
+    <li>quantity</li>
+    <li>unit</li>
+    <li>reorder_level</li>
+    <li>expiration_date</li>
+    <li>supplier_id (FK)</li>
+  </ul>
+
+  <div class="page-break"></div>
+
+  <h2>2. Relationships</h2>
+  <ul>
+    <li>User &rarr; Order : One-to-Many (customer)</li>
+    <li>User &rarr; MenuItem : One-to-Many (chef)</li>
+    <li>Order &rarr; OrderItem : One-to-Many</li>
+    <li>MenuItem &rarr; OrderItem : One-to-Many</li>
+    <li>Supplier &rarr; Inventory : One-to-Many</li>
+    <li>User &rarr; AuditLog : One-to-Many</li>
+  </ul>
+
+  <h2>3. Sample Data</h2>
+
+  <h3>Users</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Sanjai Kumar</td>
+        <td>Customer</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Marco Rossi</td>
+        <td>Chef</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Sarah Jennings</td>
+        <td>Cashier</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Dr. Evelyn Vance</td>
+        <td>Nutritionist</td>
+        <td>Active</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>MenuItems</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Calories</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>101</td>
+        <td>Grilled Salmon Quinoa Bowl</td>
+        <td>Entrees</td>
+        <td>$16.99</td>
+        <td>580</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>102</td>
+        <td>Garden Veggie Avocado Wrap</td>
+        <td>Entrees</td>
+        <td>$9.95</td>
+        <td>340</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>103</td>
+        <td>Golden Turmeric Lentil Soup</td>
+        <td>Soups</td>
+        <td>$6.50</td>
+        <td>220</td>
+        <td>Active</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Orders</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Order Date</th>
+        <th>Total</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1001</td>
+        <td>Sanjai Kumar</td>
+        <td>2026-07-01 11:20</td>
+        <td>$22.74</td>
+        <td>Preparing</td>
+      </tr>
+      <tr>
+        <td>1002</td>
+        <td>Dr. Elena Rostova</td>
+        <td>2026-07-01 11:35</td>
+        <td>$19.90</td>
+        <td>Pending</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>4. ER Diagram</h2>
+
+  <div class="er-diagram-container">
+    <div class="er-box">
+      <div class="er-header">OrderItems</div>
+      <div class="er-row"><span>id</span><span class="er-key">INT PK</span></div>
+      <div class="er-row"><span>order_id</span><span class="er-key">INT FK</span></div>
+      <div class="er-row"><span>menu_item_id</span><span class="er-key">INT FK</span></div>
+      <div class="er-row"><span>quantity</span><span>INT</span></div>
+      <div class="er-row"><span>unit_price</span><span>DECIMAL</span></div>
+    </div>
+
+    <div class="er-arrow">&uarr; order_id (1:N) &amp; menu_item_id (1:N) &darr;</div>
+
+    <div style="display: flex; gap: 40px; justify-content: center; width: 100%;">
+      <div class="er-box">
+        <div class="er-header">Orders</div>
+        <div class="er-row"><span>id</span><span class="er-key">INT PK</span></div>
+        <div class="er-row"><span>customer_id</span><span class="er-key">INT FK</span></div>
+        <div class="er-row"><span>order_date</span><span>TIMESTAMP</span></div>
+        <div class="er-row"><span>total_amount</span><span>DECIMAL</span></div>
+        <div class="er-row"><span>status</span><span>ENUM</span></div>
+      </div>
+
+      <div class="er-box">
+        <div class="er-header">MenuItems</div>
+        <div class="er-row"><span>id</span><span class="er-key">INT PK</span></div>
+        <div class="er-row"><span>name</span><span>VARCHAR</span></div>
+        <div class="er-row"><span>category</span><span>VARCHAR</span></div>
+        <div class="er-row"><span>price</span><span>DECIMAL</span></div>
+        <div class="er-row"><span>calories</span><span>INT</span></div>
+        <div class="er-row"><span>chef_id</span><span class="er-key">INT FK</span></div>
+      </div>
+    </div>
+
+    <div class="er-arrow">&uarr; customer_id (1:N) &amp; chef_id (1:N) &darr;</div>
+
+    <div class="er-box">
+      <div class="er-header">Users</div>
+      <div class="er-row"><span>id</span><span class="er-key">INT PK</span></div>
+      <div class="er-row"><span>username</span><span>VARCHAR</span></div>
+      <div class="er-row"><span>email</span><span>VARCHAR UQ</span></div>
+      <div class="er-row"><span>password_hash</span><span>VARCHAR</span></div>
+      <div class="er-row"><span>role</span><span>ENUM</span></div>
+      <div class="er-row"><span>is_active</span><span>BOOLEAN</span></div>
+    </div>
+  </div>
+
+</body>
+</html>

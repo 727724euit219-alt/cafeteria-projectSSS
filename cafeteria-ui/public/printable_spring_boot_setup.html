@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPRING BOOT BACKEND SETUP - Cafeteria Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&family=Consolas&family=Inter:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+
+    body {
+      font-family: 'Calibri', 'Inter', sans-serif;
+      color: #111;
+      background: #fff;
+      line-height: 1.4;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+      margin-top: 30px;
+    }
+
+    h1.doc-title {
+      font-size: 22pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h2 {
+      font-size: 15pt;
+      font-weight: 700;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+      color: #003366;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    p, li {
+      font-size: 10.5pt;
+      text-align: justify;
+    }
+
+    ul {
+      margin-top: 4px;
+      margin-bottom: 14px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 3px;
+    }
+
+    /* Code block stylings */
+    pre, code {
+      font-family: 'Consolas', monospace;
+      font-size: 9pt;
+      background-color: #f5f5f5;
+    }
+
+    pre {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 12px 0;
+      white-space: pre-wrap;
+    }
+
+    /* Table Styling matching printed sheet format */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 24px;
+      font-size: 10pt;
+    }
+
+    th {
+      background-color: #003366;
+      color: #fff;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid #444;
+    }
+
+    td {
+      padding: 7px 12px;
+      border: 1px solid #ccc;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+
+    .no-print-bar {
+      background: #003366;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+    }
+
+    @media print {
+      .no-print-bar {
+        display: none !important;
+      }
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print Button Bar (Hidden when printing) -->
+  <div class="no-print-bar">
+    <div>
+      <strong>📄 Spring Boot Setup Document Ready</strong> - Press <kbd>Ctrl + P</kbd> to save as PDF or Print.
+    </div>
+    <button onclick="window.print()" style="background: #fff; color: #003366; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <h1 class="doc-title">SPRING BOOT BACKEND SETUP</h1>
+
+  <h2>1. Introduction</h2>
+  <p>
+    This document describes the initial Spring Boot backend setup for the Cafeteria Management System (BiteFlow): the project structure, the PostgreSQL database connection, and the JPA entity classes that map to the tables defined in the system specifications. It follows the architecture specified in the SRS — Spring Boot 3.x with Spring Security, Java 17+, and Java Persistence API (JPA) for database access.
+  </p>
+  <p>
+    The backend runs on port 8080 and is designed to be consumed by the React.js frontend running separately on port 8081, communicating over secured REST APIs with JWT authentication and role-based access control (RBAC) for customer, cashier, chef, nutritionist, manager, and admin roles.
+  </p>
+
+  <h2>2. Project Structure</h2>
+  <p>
+    The project follows a standard layered Spring Boot layout, separating entities, repositories, services, controllers, and cross-cutting security and configuration concerns:
+  </p>
+  <pre>
+cafeteria-backend/
+├── pom.xml                         # Maven dependencies (Web, JPA, PostgreSQL, Security, JWT)
+├── database_setup.sql              # One-time PostgreSQL database + role creation
+├── .env.example                    # Template for DB credentials & JWT secret
+├── README.md
+└── src/
+    ├── main/
+    │   ├── java/com/cafeteria/
+    │   │   ├── CafeteriaBackendApplication.java  # @SpringBootApplication entry point
+    │   │   │
+    │   │   ├── entity/             # JPA entities - one per SRS table
+    │   │   │   ├── User.java
+    │   │   │   ├── MenuItem.java
+    │   │   │   ├── Order.java
+    │   │   │   ├── OrderItem.java
+    │   │   │   ├── Inventory.java
+    │   │   │   ├── Supplier.java
+    │   │   │   ├── Nutritional.java
+    │   │   │   ├── Notification.java
+    │   │   │   └── AuditLog.java
+    │   │   │
+    │   │   ├── repository/         # Spring Data JPA repositories
+    │   │   ├── service/            # Business logic
+    │   │   ├── controller/         # REST endpoints (controllers)
+    │   │   ├── dto/                # Request / response payloads
+    │   │   ├── exception/          # Custom exceptions + handlers
+    │   │   │
+    │   │   ├── security/
+    │   │   │   ├── JwtUtil.java
+    │   │   │   └── JwtAuthenticationFilter.java
+    │   │   │
+    │   │   └── config/
+    │   │       └── SecurityConfig.java
+    │   │
+    │   └── resources/
+    │       └── application.yml     # Configuration profiles
+</pre>
+
+  <div class="page-break"></div>
+
+  <h2>3. PostgreSQL Connection Setup</h2>
+  <p>
+    The database connection is configured in application.yml using environment variables for credentials, so secrets never need to be hard-coded or committed to source control.
+  </p>
+
+  <h3>3.1 Database and role creation</h3>
+  <p>Run once, as a PostgreSQL administrator, before starting the application for the first time:</p>
+  <pre>
+-- ===========================================================
+-- BITEFLOW - PostgreSQL initial setup
+-- Run once, as a PostgreSQL admin, before starting the app.
+-- Hibernate (ddl-auto: update) will create the actual tables on first run.
+-- ===========================================================
+CREATE DATABASE cafeteria_db
+  WITH ENCODING 'UTF8'
+  LC_COLLATE = 'en_US.UTF-8'
+  LC_CTYPE = 'en_US.UTF-8';
+
+CREATE USER cafeteria_user WITH PASSWORD 'cafeteria_password';
+GRANT ALL PRIVILEGES ON DATABASE cafeteria_db TO cafeteria_user;
+</pre>
+
+  <h3>3.2 application.yml</h3>
+  <pre>
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: cafeteria-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cafeteria_db
+    username: ${DB_USERNAME:cafeteria_user}
+    password: ${DB_PASSWORD:cafeteria_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 30
+          order_inserts: true
+          order_updates: true
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+app:
+  jwt:
+    secret: ${JWT_SECRET:CHANGE_THIS_TO_A_SECURE_256_BIT_SECRET_BEFORE_DEPLOYING}
+    algorithm: HS256
+    expiration-ms-customer: 7200000      # 2 hours
+    expiration-ms-staff: 28800000        # 8 hours
+    expiration-ms-admin: 86400000        # 24 hours
+</pre>
+
+  <div class="page-break"></div>
+
+  <h2>4. Entity Classes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Entity Class</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>User</strong></td>
+        <td>User registration and authentication profile (FR1, FR2)</td>
+      </tr>
+      <tr>
+        <td><strong>MenuItem</strong></td>
+        <td>Food item catalog details (FR4)</td>
+      </tr>
+      <tr>
+        <td><strong>Order</strong></td>
+        <td>Meal ordering transaction record (FR5)</td>
+      </tr>
+      <tr>
+        <td><strong>OrderItem</strong></td>
+        <td>Specific item selection details inside an order (FR5)</td>
+      </tr>
+      <tr>
+        <td><strong>Inventory</strong></td>
+        <td>Stock tracking and reorder point levels (FR6)</td>
+      </tr>
+      <tr>
+        <td><strong>Supplier</strong></td>
+        <td>Vendor contact info and performance scoring (FR6)</td>
+      </tr>
+      <tr>
+        <td><strong>Nutritional</strong></td>
+        <td>Detailed breakdown of calories, protein, carbs, fat, fiber, sodium (FR4)</td>
+      </tr>
+      <tr>
+        <td><strong>AuditLog</strong></td>
+        <td>Immutable administrative operations audit trail (FR11)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.1 User.java</h3>
+  <pre>
+package com.cafeteria.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
+
+    @Email
+    @NotBlank
+    @Column(unique = true, nullable = false, length = 100)
+    private String email;
+
+    @NotBlank
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private Role role;
+
+    @Column(name = "employee_id", length = 20)
+    private String employeeId;
+
+    @Column(name = "dietary_restrictions", columnDefinition = "TEXT")
+    private String dietaryRestrictions;
+
+    @Builder.Default
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    public enum Role { CUSTOMER, CASHIER, CHEF, NUTRITIONIST, CAFETERIA_MANAGER, ADMIN }
+}
+</pre>
+
+  <div class="page-break"></div>
+
+  <h3>4.2 MenuItem.java</h3>
+  <pre>
+package com.cafeteria.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "menu_items")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class MenuItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    @Column(nullable = false, length = 200)
+    private String name;
+
+    @NotBlank
+    @Column(nullable = false, length = 100)
+    private String category;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @DecimalMin(value = "0.0", message = "Price must be positive")
+    @Column(nullable = false, precision = 8, scale = 2)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private Integer calories;
+
+    @Column(columnDefinition = "TEXT")
+    private String allergens;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chef_id")
+    private User chef;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Status status = Status.DRAFT;
+
+    public enum Status { DRAFT, ACTIVE, INACTIVE, SEASONAL }
+}
+</pre>
+
+  <h3>4.3 Order.java</h3>
+  <pre>
+package com.cafeteria.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "orders")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private User customer;
+
+    @Builder.Default
+    @Column(name = "order_date", nullable = false)
+    private LocalDateTime orderDate = LocalDateTime.now();
+
+    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Status status = Status.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false, length = 30)
+    private PaymentMethod paymentMethod;
+
+    public enum Status { PENDING, PREPARING, READY, COMPLETED, CANCELLED }
+    public enum PaymentMethod { CASH, CARD, DIGITAL_WALLET, MEAL_PLAN }
+}
+</pre>
+
+  <div class="page-break"></div>
+
+  <h2>5. Design Notes</h2>
+  <ul>
+    <li><strong>Primary Keys:</strong> Every entity uses an auto-incrementing `Long` surrogate primary key (`GenerationType.IDENTITY`), ensuring high index lookup speeds and standard clean schema mappings.</li>
+    <li><strong>Enums Strategy:</strong> All enum mappings (such as `Role`, `Status`, and `PaymentMethod`) are saved to the database as human-readable string values via `@Enumerated(EnumType.STRING)`, protecting the persistence layer from ordering revisions in Java.</li>
+    <li><strong>Lazy Loading:</strong> Relationships are mapped to FetchType.LAZY by default to avoid triggering heavy nested joins when returning payloads.</li>
+    <li><strong>Audit Logs Immutability:</strong> AuditLogs records are append-only to satisfy security and audit trail regulations (§3.5); no update or delete REST controllers are exposed in the service layer.</li>
+    <li><strong>Allergen & Diet Details:</strong> Allergen lists and dietary restriction exclusions are stored in PostgreSQL using text columns mapped to JSON serialization wrappers to allow fast parsing of variable parameters on the React UI front-end.</li>
+  </ul>
+
+</body>
+</html>
